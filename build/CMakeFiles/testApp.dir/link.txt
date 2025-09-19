@@ -1,1 +1,0 @@
-/usr/bin/c++ CMakeFiles/testApp.dir/src/main.cpp.o CMakeFiles/testApp.dir/src/glad.c.o -o testApp  -lOpenGL libs/glfw/src/libglfw3.a /usr/lib/x86_64-linux-gnu/librt.a -lm -ldl 
