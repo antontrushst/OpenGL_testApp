@@ -24,6 +24,8 @@ float vertices[] =
      0.0f,  0.5f, 0.0f,     0.0f, 0.0f, 1.0f
 };
 
+float x_offset = 0.5f;
+
 unsigned int indices[] =
 {
     0, 1, 2
@@ -84,8 +86,9 @@ int main()
         processInput(window);
         glClearColor(back_color[0], back_color[1], back_color[2], back_color[3]);
         glClear(GL_COLOR_BUFFER_BIT);
-
+        
         ourShader.use();
+        ourShader.setFloat("xOffset", x_offset);
         glBindVertexArray(VAOs[0]);
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
