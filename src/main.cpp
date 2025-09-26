@@ -20,6 +20,8 @@ const char* fragmentShaderFilePath = "/home/anton/testApp/src/fragmentShader.txt
 const char* texture1FilePath = "/home/anton/testApp/textures/container.jpg";
 const char* texture2FilePath = "/home/anton/testApp/textures/awesomeface.png";
 
+float blending = 0.1f;
+
 float vertices[] =
 {
     // positions            // colors               // texture coords
@@ -76,7 +78,7 @@ int main()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     if(data)
     {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,
@@ -91,10 +93,10 @@ int main()
 
     data = stbi_load(texture2FilePath, &width, &height, &nrChannels, 0);
     glBindTexture(GL_TEXTURE_2D, textures[1]);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     if(data)
     {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA,
@@ -130,6 +132,7 @@ int main()
     Shader ourShader(vertexShaderFilePath, fragmentShaderFilePath);
     ourShader.use();
     ourShader.setInt("texture2", 1);
+    //ourShader.setFloat("blend", blending);
     
     while(!glfwWindowShouldClose(window))
     {
@@ -137,6 +140,7 @@ int main()
         glClearColor(back_color[0], back_color[1], back_color[2], back_color[3]);
         glClear(GL_COLOR_BUFFER_BIT);
         
+        glUniform1f(glGetUniformLocation(ourShader.ID, "blend"), blending);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, textures[0]);
         glActiveTexture(GL_TEXTURE1);
@@ -161,6 +165,10 @@ void processInput(GLFWwindow* window)
 {
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
+    if(glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+        blending += 0.1f;
+    if(glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+        blending -= 0.1f;
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
